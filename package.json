@@ -11,7 +11,9 @@
     },
     "devDependencies": {
         "chai": "*",
-        "mocha": "*"
+        "mocha": "*",
+        "sinon": "*",
+        "sinon-chai": "*"
     },
     "scripts": {
         "test": "mocha --no-colors --reporter spec"

@@ -9,6 +9,7 @@ module.exports = {
     name: 'Top Selector Specificity',
     type: 'selector',
     aggregate: 'max',
+    format: 'number',
     measure: function (selector) {
         var identifiers = getIdentifiers(selector),
             specificity = 0;
@@ -84,6 +85,12 @@ var countAttributeIdentifiers = function (identifier) {
 var countPseudoClassIdentifiers = function  (identifier) {
     var regex = /:[^:]/,
         matches = regex.exec(identifier);
+
+    // :not pseudo-class identifier itself is ignored
+    // only selectors inside it are counted
+    if (identifier.match(/:not/)) {
+        return 0;
+    }
 
     if (matches) {
         return matches.length;

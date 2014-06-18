@@ -4,7 +4,7 @@ var expect = require('chai').expect,
     Penelope = require('../lib/Penelope.js');
 
 describe('The Penelope tool', function() {
-    it('should throw an exception if stylesheet data not supplied as string, array or multi-param strings', function() {
+    it('should throw an Penelope if stylesheet data not supplied as string, array or multi-param strings', function() {
         penelope = new Penelope([]);
         expect(function() {penelope.run({})}).to.throw();
         expect(function() {penelope.run(0)}).to.throw();
@@ -36,6 +36,18 @@ describe('The Penelope tool', function() {
         expect(report['mock-stylesheet-metric']).to.equal(3);
     });
 
+    it('should return 0 for sum metrics with no data to report on', function() {
+        var mockMetric = {id: 'mock-stylesheet-metric', type: 'rule', aggregate: 'sum', measure: function() {return 1}},
+            stylesheet = '/* comment */';
+
+        penelope = new Penelope([mockMetric]);
+        var report = penelope.run([stylesheet, stylesheet, stylesheet]);
+
+
+        expect(report).to.have.property('mock-stylesheet-metric');
+        expect(report['mock-stylesheet-metric']).to.equal(0);
+    });
+
     it('should return mean values for mean metrics', function() {
         var mockMetric = {id: 'mock-stylesheet-metric', type: 'stylesheet', aggregate: 'mean', measure: function() {return 1}},
             stylesheet = 'body {background: #FFF;}';
@@ -48,13 +60,34 @@ describe('The Penelope tool', function() {
         expect(report['mock-stylesheet-metric']).to.equal(1);
     });
 
+    it('should return 0 for mean metrics with no data to report on', function () {
+        var mockMetric = {id: 'mock-stylesheet-metric', type: 'rule', aggregate: 'mean', measure: function() {return 1}},
+            stylesheet = '/* comment */';
+
+        penelope = new Penelope([mockMetric]);
+        var report = penelope.run([stylesheet]);
+
+
+        expect(report).to.have.property('mock-stylesheet-metric');
+        expect(report['mock-stylesheet-metric']).to.equal(0);
+    });
+
     it('should return max values for max metrics', function () {
         var mockIntMetric = {id: 'mock-int-metric', type: 'stylesheet', aggregate: 'max', measure: function(stylesheet) {return stylesheet.length;}},
             penelope = new Penelope([mockIntMetric]),
             report = penelope.run(['body {background: #FFF;}', 'body {background: #FFFFFF;}']);
-        
+
         expect(report).to.have.property('mock-int-metric');
         expect(report['mock-int-metric']).to.equal(27);
+    });
+
+    it('should return 0 for max metrics with no data to report on', function () {
+        var mockIntMetric = {id: 'mock-int-metric', type: 'rule', aggregate: 'max', measure: function(stylesheet) {return stylesheet.length;}},
+            penelope = new Penelope([mockIntMetric]),
+            report = penelope.run(['/* comment */']);
+
+        expect(report).to.have.property('mock-int-metric');
+        expect(report['mock-int-metric']).to.equal(0);
     });
 
     it('should return max values determined by an iterator function if one is present', function() {
@@ -114,6 +147,24 @@ describe('The Penelope tool', function() {
         expect(report['mock-rule-metric']).to.equal(2);
     });
 
+    it('should run metrics on media queries', function () {
+        var mockMetric = {id: 'mock-media-query-metric', type: 'mediaquery', aggregate: 'list', measure: function(query) {return query;}};
+            penelope = new Penelope([mockMetric]),
+            report = penelope.run('@media handheld, (max-width: 700px) { body { margin: 100px; }} @import url(css/styles.css); body { margin: 0; }');
+        expect(report).to.have.property('mock-media-query-metric');
+        expect(report['mock-media-query-metric'][0]).to.equal('handheld');
+        expect(report['mock-media-query-metric'][1]).to.equal('(max-width: 700px)');
+    });
+
+    it('should run metrics on rules inside media query blocks', function () {
+        var mockMetric = {id: 'mock-media-query-metric', type: 'rule', aggregate: 'list', measure: function(rule) {return rule;}},
+        penelope = new Penelope([mockMetric]),
+        report = penelope.run('@media print {a {color: #000;} header {display: none;}}');
+        expect(report).to.have.property('mock-media-query-metric');
+        expect(report['mock-media-query-metric'][0]).to.equal('a {color: #000;}');
+        expect(report['mock-media-query-metric'][1]).to.equal('header {display: none;}');
+    });
+
     it('should run metrics on selectors', function() {
         var mockMetric = {id: 'mock-selector-metric', type: 'selector', aggregate: 'sum', measure: function() {return 1}};
         penelope = new Penelope([mockMetric]);
@@ -157,5 +208,14 @@ describe('The Penelope tool', function() {
         report = penelope.run("body {margin: 0; padding: 0} a {color: #00f} h1 {font-weight: bold; color: #000;}");
         expect(report).to.have.property('mock-value-metric');
         expect(report['mock-value-metric']).to.equal(5);
+    });
+
+    it('should return results for metrics measuring optional elements when those elements are not found', function () {
+        var mockMetric = {id: 'mock-media-query-metric', type: 'mediaquery', aggregate: 'length', measure: function(query) {return query;}};
+            penelope = new Penelope([mockMetric]),
+            report = penelope.run('body { margin: 0; }');
+
+        expect(report).to.have.property('mock-media-query-metric');
+        expect(report['mock-media-query-metric']).to.equal(0);
     });
 });
