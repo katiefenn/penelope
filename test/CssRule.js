@@ -25,4 +25,10 @@ describe('The Rule Parser', function () {
         
         expect(cssRule.getDeclarations()).to.have.length(2);
     });
+
+    it('should return a collection of (n) items of rules for a rule with (n) child rules', function () {
+        var cssRule = new CssRule('li {float: left; a {border: 1px solid #777; display: block;} ul {padding: 10px; li {color: #ff0000}}}');
+        expect(cssRule.getRules()[0]).to.equal('a {border: 1px solid #777; display: block;}');
+        expect(cssRule.getRules()[1]).to.equal('ul {padding: 10px; li {color: #ff0000}}');
+    });
 });

@@ -13,6 +13,12 @@ module.exports = [
     require('./TotalIdentifiers.js'),
     require('./TotalDeclarations.js'),
 
+    // Sassy metrics
+    require('./TopChildRules.js'),
+    require('./MeanChildRules.js'),
+    require('./TopNestedRuleDepth.js'),
+    require('./MeanNestedRuleDepth.js'),
+
     // Stylesheet Element Averages
     require('./SelectorsPerRule.js'),
     require('./IdentifiersPerSelector.js'),
