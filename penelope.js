@@ -102,7 +102,7 @@ var readFile = function (filePath, onLoad) {
 };
 
 var fileIsStylesheet = function (filePath) {
-    return filePath.indexOf('.css') !== -1;
+    return filePath.indexOf('.scss') !== -1;
 };
 
 var runReport = function (stylesheets, metrics) {
