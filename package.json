@@ -1,28 +1,30 @@
 {
-    "name": "penelope",
-    "description": "An experimental Sass analysis tool",
-    "version": "0.0.0",
-    "main": "penelope.js",
-    "dependencies": {
-        "underscore": "*",
-        "cli-color": "*",
-        "minimist": "0.0.7",
-        "async": "~0.2.10"
-    },
-    "devDependencies": {
-        "chai": "*",
-        "mocha": "*",
-        "sinon": "*",
-        "sinon-chai": "*"
-    },
-    "scripts": {
-        "test": "mocha --no-colors --reporter spec"
-    },
-    "bin": {"penelope": "./penelope.js"},
-    "homepage": "https://github.com/katiefenn/penelope",
-    "bugs": "https://github.com/katiefenn/penelope/issues",
-    "author": "Katie Fenn",
-    "repository": "https://github.com/katiefenn/penelope",
-    "preferGlobal": true,
-    "license": "MIT"
+  "name": "penelope",
+  "description": "An experimental Sass analysis tool",
+  "version": "0.0.0",
+  "main": "penelope.js",
+  "dependencies": {
+    "underscore": "*",
+    "cli-color": "*",
+    "minimist": "0.0.7",
+    "async": "~0.2.10"
+  },
+  "devDependencies": {
+    "chai": "~2.3.0",
+    "mocha": "~2.2.5",
+    "sinon": "~1.14.1",
+    "sinon-chai": "~2.7.0"
+  },
+  "scripts": {
+    "test": "mocha --no-colors --reporter spec"
+  },
+  "bin": {
+    "penelope": "./penelope.js"
+  },
+  "homepage": "https://github.com/katiefenn/penelope",
+  "bugs": "https://github.com/katiefenn/penelope/issues",
+  "author": "Katie Fenn",
+  "repository": "https://github.com/katiefenn/penelope",
+  "preferGlobal": true,
+  "license": "MIT"
 }
